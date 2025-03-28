@@ -14,7 +14,6 @@ public class Main {
 
 
         int lastArticleId = 0;
-        List<Article> articles = new ArrayList<>();
 
         while (true) {
             System.out.print("명령어 > ");
@@ -25,20 +24,11 @@ public class Main {
             }
             if (cmd.equals("article write")) {
                 System.out.println("==글쓰기==");
-                int id = lastArticleId + 1;
                 System.out.print("제목 : ");
                 String title = sc.nextLine().trim();
                 System.out.print("내용 : ");
                 String body = sc.nextLine().trim();
 
-                Article article = new Article(id, title, body);
-                articles.add(article);
-
-                lastArticleId++;
-                System.out.println(article);
-                System.out.println(id + "번 글이 작성되었습니다");
-
-                /// ///////////////////////////////////////////
                 Connection conn = null;
                 PreparedStatement pstmt = null;
                 try {
@@ -85,23 +75,11 @@ public class Main {
 
             } else if (cmd.equals("article list")) {
                 System.out.println("==목록==");
-                if (articles.size() == 0) {
-                    System.out.println("게시글 없음");
-                    continue;
-                }
-                System.out.println("   번호    /    제목    ");
-                for (Article article : articles) {
-                    System.out.printf("   %d     /   %s    \n", article.getId(), article.getTitle());
-                }
-                String sql = "select * from article";
-
-
-                /// ////////////////////////
 
                 Connection conn = null;
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
-                List<Article> list = new ArrayList<Article>();
+                List<Article> list = new ArrayList<>();
 
                 try {
                     Class.forName("org.mariadb.jdbc.Driver");
@@ -109,7 +87,7 @@ public class Main {
                     conn = DriverManager.getConnection(url, "root", "");
                     System.out.println("연결 성공!");
 
-                    sql = "select * from article order by id desc";
+                    String sql = "select * from article order by id desc";
 
                     System.out.println(sql);
 
@@ -162,11 +140,61 @@ public class Main {
                     }
                 }
 
+            }  else if (cmd.startsWith("article modify")) {
+                System.out.println("==수정==");
+
+                int id = Integer.parseInt(cmd.split(" ")[2]);
+                System.out.print("바꿀 제목 :");
+                String title2 = sc.nextLine();
+                System.out.print("바꿀 내용 :");
+                String body2 = sc.nextLine();
+
+                Connection conn = null;
+                PreparedStatement pstmt = null;
+
+                try {
+                    Class.forName("org.mariadb.jdbc.Driver");
+                    String url = "jdbc:mariadb://127.0.0.1:3306/AM_DB_25_03?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul";
+                    conn = DriverManager.getConnection(url, "root", "");
+                    System.out.println("연결 성공!");
+                    String sql = "UPDATE article";
+                    sql += " set updateDate = now(),";
+                    sql += " title =  '" + title2 + "'," ;
+                    sql += " body =  '" + body2 + "'" ;
+                    sql += "WHERE id =" + id + ";";
+
+                    pstmt = conn.prepareStatement(sql);
+
+                    int affectedRows = pstmt.executeUpdate();
+
+                    System.out.println("affected rows: " + affectedRows);
+
+                } catch (ClassNotFoundException e) {
+                    System.out.println("드라이버 로딩 실패" + e);
+                } catch (SQLException e) {
+                    System.out.println("에러 : " + e);
+                } finally {
+                    try {
+                        if (pstmt != null && !pstmt.isClosed()) {
+                            pstmt.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        if (conn != null && !conn.isClosed()) {
+                            conn.close();
+                        }
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+
         }
 
         System.out.println("==프로그램 종료==");
         sc.close();
-        
+
     }
 }
