@@ -32,7 +32,8 @@ public class JDBCListConnTest {
                 String updateDate = rs.getString("updateDate");
                 String title = rs.getString("title");
                 String body = rs.getString("body");
-                Article article = new Article(id, regDate, updateDate, title, body);
+                String writer = rs.getString("writer");
+                Article article = new Article(id, regDate, updateDate, title, body,writer);
                 list.add(article);
             }
             for (int i = 0; i < list.size(); i++) {

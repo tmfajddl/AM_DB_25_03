@@ -7,26 +7,31 @@ create table article(
                         regDate datetime not null,
                         updateDate datetime not null,
                         title char(100) not null,
-                        `body` text not null
+                        `body` text not null,
+                        writer CHAR(100) NOT NULL
+
 );
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = '제목1',
-`body` = '내용1';
+`body` = '내용1'
+writer = test1;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = '제목2',
-`body` = '내용2';
+`body` = '내용2'
+writer = test1;
 
 INSERT INTO article
 SET regDate = NOW(),
 updateDate = NOW(),
 title = '제목3',
-`body` = '내용3';
+`body` = '내용3'
+writer = test2;
 
 select *
 from article

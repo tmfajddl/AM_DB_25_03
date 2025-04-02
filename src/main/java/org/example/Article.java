@@ -8,13 +8,15 @@ public class Article {
     private String updateDate;
     private String title;
     private String body;
+    private String writer;
 
-    public Article(int id, String regDate, String updateDate, String title, String body) {
+    public Article(int id, String regDate, String updateDate, String title, String body, String writer) {
         this.id = id;
         this.regDate = regDate;
         this.updateDate = updateDate;
         this.title = title;
         this.body = body;
+        this.writer = writer;
     }
 
     public Article(int id, String title, String body) {
@@ -29,6 +31,7 @@ public class Article {
         this.updateDate = (String) articleMap.get("updateDate");
         this.title = (String) articleMap.get("title");
         this.body = (String) articleMap.get("body");
+        this.writer = (String) articleMap.get("writer");
     }
 
     @Override
@@ -79,5 +82,11 @@ public class Article {
 
     public void setBody(String body) {
         this.body = body;
+    }
+    public String getWriter() {
+        return writer;
+    }
+    public void setWriter(String writer) {
+        this.writer = writer;
     }
 }

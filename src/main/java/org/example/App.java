@@ -64,6 +64,10 @@ public class App {
         }
 
         if (cmd.equals("article write")) {
+            if(action == 0){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
             System.out.println("==글쓰기==");
             System.out.print("제목 : ");
             String title = sc.nextLine();
@@ -76,7 +80,8 @@ public class App {
             sql.append("SET regDate = NOW(),");
             sql.append("updateDate = NOW(),");
             sql.append("title = ?,", title);
-            sql.append("`body` = ?;", body);
+            sql.append("`body` = ?,", body);
+            sql.append("writer = ?;", loginName);
 
             int id = DBUtil.insert(conn, sql);
 
@@ -104,11 +109,15 @@ public class App {
                 return 0;
             }
 
-            System.out.println("  번호  /   제목  ");
+            System.out.println("  번호  /   제목  /   작성자");
             for (Article article : articles) {
-                System.out.printf("  %d     /   %s   \n", article.getId(), article.getTitle());
+                System.out.printf("  %d     /   %s   /    %s\n", article.getId(), article.getTitle(), article.getWriter());
             }
         } else if (cmd.startsWith("article modify")) {
+            if(action == 0){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
 
             int id = 0;
 
@@ -128,6 +137,11 @@ public class App {
 
             if (articleMap.isEmpty()) {
                 System.out.println(id + "번 글은 없음");
+                return 0;
+            }
+
+            if(!loginName.equals(articleMap.get("writer"))){
+                System.out.println("수정 권한이 없습니다");
                 return 0;
             }
 
@@ -204,6 +218,11 @@ public class App {
                 return 0;
             }
 
+            if(!loginName.equals(articleMap.get("writer"))){
+                System.out.println("삭제 권한이 없습니다");
+                return 0;
+            }
+
             System.out.println("==삭제==");
             sql = new SecSql();
             sql.append("DELETE FROM article");
@@ -213,6 +232,10 @@ public class App {
 
             System.out.println(id + "번 글이 삭제되었습니다.");
         } else if (cmd.equals("member join")) {
+            if(action != 0){
+                System.out.println("이미 회원가입 되어있습니다.");
+                return 0;
+            }
             System.out.println("====회원가입====");
             String loginId = null;
             while (true) {
@@ -319,26 +342,29 @@ public class App {
                 sql.append("WHERE loginId = ? AND", loginId);
                 sql.append("loginPw = ?;", loginPw);
 
-                Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
-                Member member = new Member(articleMap);
-                if (articleMap.isEmpty()) {
+                Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+
+                if(!memberMap.isEmpty()){
+                    loginName = loginId;
+                    System.out.println(loginName +"님 로그인 되었습니다.");
+                    action++;
+                    break;
+                }
+
+                else if (memberMap.isEmpty()) {
                     sql = new SecSql();
                     sql.append("SELECT *");
                     sql.append("FROM `member`");
                     sql.append("WHERE loginId = ?;", loginId);
 
-                    articleMap = DBUtil.selectRow(conn, sql);
-                    if (articleMap.isEmpty()) {
+                    memberMap = DBUtil.selectRow(conn, sql);
+                    if (memberMap.isEmpty()) {
                         System.out.println("존재하지 않는 아이디입니다.");
                         continue;
                     }
                     System.out.println("비밀번호가 틀립니다.");
-                    continue;
                 }
-                loginName = member.getName();
-                System.out.println(loginName +"님 로그인 되었습니다.");
-                action++;
-                break;
+
             }
         }
         return 0;
