@@ -3,7 +3,9 @@ package org.example;
 import org.example.util.DBUtil;
 import org.example.util.SecSql;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -209,9 +211,50 @@ public class App {
             DBUtil.delete(conn, sql);
 
             System.out.println(id + "번 글이 삭제되었습니다.");
+        } else if (cmd.equals("member join")) {
+            System.out.println("====회원가입====");
+            String loginId = null;
+            while(true) {
+                System.out.print("아이디 : ");
+                loginId = sc.nextLine();
+                SecSql sql = new SecSql();
+                sql.append("SELECT *");
+                sql.append("FROM `member`");
+                sql.append("WHERE loginId = ?;", loginId);
+                Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+                if (articleMap.isEmpty()) {
+                    break;
+                }
+                System.out.println("아이디가 중복되었습니다.");
+            }
+
+            String loginPw = null;
+            while(true) {
+                System.out.print("비밀번호 : ");
+                loginPw = sc.nextLine();
+                System.out.print("비밀번호 확인 : ");
+                String loginPw2 = sc.nextLine();
+                if(loginPw.equals(loginPw2)) {
+                    break;
+                }
+                System.out.println("비밀번호가 일치하지 않습니다.");
+            }
+            System.out.print("이름 : ");
+            String name = sc.nextLine();
+
+            SecSql sql = new SecSql();
+            sql.append("INSERT INTO `member`");
+            sql.append("SET regDate = NOW(),");
+            sql.append("updateDate = NOW(),");
+            sql.append("loginId = ?,", loginId);
+            sql.append("loginPw = ?,", loginPw);
+            sql.append("`name` = ?;", name);
+
+            int id = DBUtil.insert(conn, sql);
+
+            System.out.println(id + "번 회원이 추가되었습니다.");
+
         }
-
-
         return 0;
     }
 }
