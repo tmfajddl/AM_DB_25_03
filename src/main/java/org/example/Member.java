@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Map;
+
 public class Member {
     private int id;
     private String regDate;
@@ -15,6 +17,16 @@ public class Member {
         this.liginPw = liginPw;
         this.Name = Name;
     }
+
+    public Member(Map<String, Object> memberMap) {
+        this.id = (int) memberMap.get("id");
+        this.regDate = (String) memberMap.get("regDate");
+        this.updateDate = (String) memberMap.get("updateDate");
+        this.liginId = (String) memberMap.get("liginId");
+        this.liginPw = (String) memberMap.get("liginPw");
+        this.Name = (String) memberMap.get("name");
+    }
+
     public int getId() {
         return id;
     }

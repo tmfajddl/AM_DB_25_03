@@ -214,27 +214,27 @@ public class App {
         } else if (cmd.equals("member join")) {
             System.out.println("====회원가입====");
             String loginId = null;
-            while(true) {
+            while (true) {
                 System.out.print("아이디 : ");
                 loginId = sc.nextLine();
                 SecSql sql = new SecSql();
                 sql.append("SELECT *");
                 sql.append("FROM `member`");
                 sql.append("WHERE loginId = ?;", loginId);
-                Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
-                if (articleMap.isEmpty()) {
+                Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+                if (memberMap.isEmpty()) {
                     break;
                 }
                 System.out.println("아이디가 중복되었습니다.");
             }
 
             String loginPw = null;
-            while(true) {
+            while (true) {
                 System.out.print("비밀번호 : ");
                 loginPw = sc.nextLine();
                 System.out.print("비밀번호 확인 : ");
                 String loginPw2 = sc.nextLine();
-                if(loginPw.equals(loginPw2)) {
+                if (loginPw.equals(loginPw2)) {
                     break;
                 }
                 System.out.println("비밀번호가 일치하지 않습니다.");
@@ -253,8 +253,32 @@ public class App {
             int id = DBUtil.insert(conn, sql);
 
             System.out.println(id + "번 회원이 추가되었습니다.");
+        } else if (cmd.equals("member list")) {
+                System.out.println("==회원 목록==");
 
-        }
+                List<Member> members = new ArrayList<>();
+
+                SecSql sql = new SecSql();
+                sql.append("SELECT *");
+                sql.append("FROM `member`");
+                sql.append("ORDER BY id DESC");
+
+                List<Map<String, Object>> memberListMap = DBUtil.selectRows(conn, sql);
+
+                for (Map<String, Object> memberMap : memberListMap) {
+                    members.add(new Member(memberMap));
+                }
+
+                if (members.size() == 0) {
+                    System.out.println("게시글이 없습니다");
+                    return 0;
+                }
+
+                System.out.println("  번호  /   이름  ");
+                for (Member member : members) {
+                    System.out.printf("  %d     /   %s   \n", member.getId(), member.getName());
+                }
+            }
         return 0;
     }
 }
