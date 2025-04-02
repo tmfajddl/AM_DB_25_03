@@ -12,7 +12,8 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class App {
-
+    int action = 0;
+    String loginName = null;
     public void run() {
         System.out.println("==프로그램 시작==");
         Scanner sc = new Scanner(System.in);
@@ -217,15 +218,20 @@ public class App {
             while (true) {
                 System.out.print("아이디 : ");
                 loginId = sc.nextLine();
+                if (loginId.trim().isEmpty() || loginId.contains(" ")) {
+                    System.out.println("아이디가 바르게 입력되지 않았습니다");
+                    continue;
+                }
                 SecSql sql = new SecSql();
                 sql.append("SELECT *");
                 sql.append("FROM `member`");
                 sql.append("WHERE loginId = ?;", loginId);
-                Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
-                if (memberMap.isEmpty()) {
+                Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+                if (articleMap.isEmpty()) {
                     break;
                 }
                 System.out.println("아이디가 중복되었습니다.");
+
             }
 
             String loginPw = null;
@@ -239,8 +245,16 @@ public class App {
                 }
                 System.out.println("비밀번호가 일치하지 않습니다.");
             }
-            System.out.print("이름 : ");
-            String name = sc.nextLine();
+            String name = null;
+            while (true) {
+                System.out.print("이름 : ");
+                name = sc.nextLine();
+                if(!name.isEmpty()){
+                    break;
+                }
+                System.out.println("이름을 입력하세요.");
+            }
+
 
             SecSql sql = new SecSql();
             sql.append("INSERT INTO `member`");
@@ -270,7 +284,7 @@ public class App {
                 }
 
                 if (members.size() == 0) {
-                    System.out.println("게시글이 없습니다");
+                    System.out.println("회원이 없습니다");
                     return 0;
                 }
 
@@ -278,7 +292,55 @@ public class App {
                 for (Member member : members) {
                     System.out.printf("  %d     /   %s   \n", member.getId(), member.getName());
                 }
+        } else if (cmd.equals("member logout")) {
+            if(action == 0) {
+                System.out.println("로그인 되어 있지않습니다.");
+                return 0;
             }
+            System.out.println(loginName + "님 로그아웃 되었습니다.");
+            loginName = null;
+            action--;
+
+        } else if (cmd.equals("member login")) {
+            if(action != 0) {
+                System.out.println("이미 로그인 되었습니다.");
+                return 0;
+            }
+            String loginId = null;
+            String loginPw = null;
+            while (true) {
+                System.out.print("아이디 : ");
+                loginId = sc.nextLine();
+                System.out.print("비밀번호 : ");
+                loginPw = sc.nextLine();
+                SecSql sql = new SecSql();
+                sql.append("SELECT *");
+                sql.append("FROM `member`");
+                sql.append("WHERE loginId = ? AND", loginId);
+                sql.append("loginPw = ?;", loginPw);
+
+                Map<String, Object> articleMap = DBUtil.selectRow(conn, sql);
+                Member member = new Member(articleMap);
+                if (articleMap.isEmpty()) {
+                    sql = new SecSql();
+                    sql.append("SELECT *");
+                    sql.append("FROM `member`");
+                    sql.append("WHERE loginId = ?;", loginId);
+
+                    articleMap = DBUtil.selectRow(conn, sql);
+                    if (articleMap.isEmpty()) {
+                        System.out.println("존재하지 않는 아이디입니다.");
+                        continue;
+                    }
+                    System.out.println("비밀번호가 틀립니다.");
+                    continue;
+                }
+                loginName = member.getName();
+                System.out.println(loginName +"님 로그인 되었습니다.");
+                action++;
+                break;
+            }
+        }
         return 0;
     }
 }

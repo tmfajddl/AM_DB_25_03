@@ -70,3 +70,18 @@ SET updateDate = NOW(),
     title = 'title1',
     `body` = 'body1'
 WHERE id = 5;
+
+USE AM_DB_25_03;
+
+CREATE TABLE `member`(
+                         id INT NOT NULL AUTO_INCREMENT,
+                         PRIMARY KEY(id),
+                         regDate DATETIME NOT NULL,
+                         updateDate DATETIME NOT NULL,
+                         loginId CHAR(100) NOT NULL,
+                         loginPw CHAR(100) NOT NULL,
+                         `name` CHAR(100) NOT NULL
+);
+
+SELECT *
+FROM `member`;
