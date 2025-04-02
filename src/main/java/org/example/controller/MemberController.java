@@ -1,13 +1,10 @@
 package org.example.controller;
 
-import org.example.Member;
 import org.example.service.MemberService;
 import org.example.util.DBUtil;
 import org.example.util.SecSql;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -94,32 +91,6 @@ public class MemberController {
         int id = memberService.doJoin(conn, loginId, loginPw, name);
 
         System.out.println(id + "번 회원이 가입됨");
-    }
-    public void showList() {
-        System.out.println("==회원 목록==");
-
-        List<Member> members = new ArrayList<>();
-
-        SecSql sql = new SecSql();
-        sql.append("SELECT *");
-        sql.append("FROM `member`");
-        sql.append("ORDER BY id DESC");
-
-        List<Map<String, Object>> memberListMap = DBUtil.selectRows(conn, sql);
-
-        for (Map<String, Object> memberMap : memberListMap) {
-            members.add(new Member(memberMap));
-        }
-
-        if (members.size() == 0) {
-            System.out.println("회원이 없습니다");
-            return;
-        }
-
-        System.out.println("  번호  /   이름  ");
-        for (Member member : members) {
-            System.out.printf("  %d     /   %s   \n", member.getId(), member.getName());
-        }
     }
     public String doLogin(){
         String loginId = null;

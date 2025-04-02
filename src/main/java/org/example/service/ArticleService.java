@@ -1,22 +1,38 @@
 package org.example.service;
 
+import org.example.Article;
 import org.example.dao.ArticleDao;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 public class ArticleService {
+
     private ArticleDao articleDao;
 
-    public ArticleService() {
-        this.articleDao = new ArticleDao();
+    public ArticleService(Connection conn) {
+        this.articleDao = new ArticleDao(conn);
     }
 
-    public Map<String, Object> isIdDup(Connection conn, int id) {
-        return articleDao.isIdDup(conn, id);
+    public int doWrite(String title, String body) {
+        return articleDao.doWrite(title, body);
+
     }
 
-    public int doAdd(Connection conn, String loginId, String loginPw, String name) {
-        return articleDao.doAdd(conn,loginId, loginPw, name);
+    public List<Article> getArticles() {
+        return articleDao.getArticles();
+    }
+
+    public Map<String, Object> getArticleById(int id) {
+        return articleDao.getArticleById(id);
+    }
+
+    public void doUpdate(int id, String title, String body) {
+        articleDao.doUpdate(id, title, body);
+    }
+
+    public void doDelete(int id) {
+        articleDao.doDelete(id);
     }
 }

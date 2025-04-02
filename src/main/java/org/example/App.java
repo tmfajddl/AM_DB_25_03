@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.util.Scanner;
 
 public class App {
-    int action = 0;
-    String loginName = null;
+    boolean active = false;
+    String userId = null;
     public void run() {
         System.out.println("==프로그램 시작==");
         Scanner sc = new Scanner(System.in);
@@ -32,7 +32,7 @@ public class App {
             try {
                 conn = DriverManager.getConnection(url, "root", "");
 
-                int actionResult = doAction(conn, sc, cmd);
+                int actionResult = action(conn, sc, cmd);
 
                 if (actionResult == -1) {
                     System.out.println("==프로그램 종료==");
@@ -54,7 +54,7 @@ public class App {
         }
     }
 
-    private int doAction(Connection conn, Scanner sc, String cmd) {
+    private int action(Connection conn, Scanner sc, String cmd) {
 
         if (cmd.equals("exit")) {
             return -1;
@@ -63,55 +63,55 @@ public class App {
         MemberController memberController = new MemberController(sc, conn);
         ArticleController articleController = new ArticleController(sc, conn);
 
-        if (cmd.equals("article write")) {
-            if(action == 0){
-                System.out.println("로그인 후 이용바랍니다.");
+        if (cmd.equals("member login")){
+            if(active){
+                System.out.println("이미 로그인 되어있습니다.");
                 return 0;
             }
-            articleController.doWrite(loginName);
-
-
-        } else if (cmd.equals("article list")) {
-            articleController.showList();
-        } else if (cmd.startsWith("article modify")) {
-            if(action == 0){
-                System.out.println("로그인 후 이용바랍니다.");
+            userId = memberController.doLogin();
+            active = true;
+        } else if (cmd.equals("member logout")){
+            if(!active) {
+                System.out.println("로그인 되어 있지않습니다.");
                 return 0;
             }
-            articleController.doModify(cmd, loginName);
-        } else if (cmd.startsWith("article detail")) {
-            articleController.doDetail(cmd);
-        } else if (cmd.startsWith("article delete")) {
-            if(action == 0){
-                System.out.println("로그인 후 이용바랍니다.");
-                return 0;
-            }
-            articleController.doDelete(cmd,loginName);
+            System.out.println(userId + "님 로그아웃 되었습니다.");
+            userId = null;
+            active = false;
         } else if (cmd.equals("member join")) {
-            if(action != 0){
+            if(active){
                 System.out.println("이미 회원가입 되어있습니다.");
                 return 0;
             }
             memberController.doJoin();
-        } else if (cmd.equals("member list")) {
-            memberController.showList();
-        } else if (cmd.equals("member logout")) {
-            if(action == 0) {
-                System.out.println("로그인 되어 있지않습니다.");
+        } else if (cmd.equals("article write")) {
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
                 return 0;
             }
-            System.out.println(loginName + "님 로그아웃 되었습니다.");
-            loginName = null;
-            action--;
-
-        } else if (cmd.equals("member login")) {
-            if(action != 0) {
-                System.out.println("이미 로그인 되었습니다.");
+            articleController.doWrite();
+        } else if (cmd.equals("article list")) {
+            articleController.showList();
+        } else if (cmd.startsWith("article modify")) {
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
                 return 0;
             }
-            loginName = memberController.doLogin();
-            action++;
+            articleController.doModify(cmd,userId);
+        } else if (cmd.startsWith("article detail")) {
+            articleController.showDetail(cmd);
+        } else if (cmd.startsWith("article delete")) {
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
+            articleController.doDelete(cmd,userId);
+        } else {
+            System.out.println("사용할 수 없는 명령어입니다");
         }
+
+
         return 0;
     }
+
 }
