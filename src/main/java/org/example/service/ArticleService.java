@@ -47,4 +47,8 @@ public class ArticleService {
     public List<Article> doSearchWriter(String word) {
         return articleDao.doSearchWriter(word);
     }
+
+    public List<Article> getPageArticles(int start, int limit){
+        return articleDao.getPageArticles(start, limit);
+    }
 }

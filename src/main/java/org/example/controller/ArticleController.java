@@ -34,10 +34,27 @@ public class ArticleController {
         System.out.println(id + "번 글이 생성됨");
     }
 
-    public void showList() {
-        System.out.println("==목록==");
-        List<Article> articles = articleService.getArticles();
+    public void showList(String cmd) {
 
+        if(cmd.equals("article list")){
+            System.out.println("==목록==");
+            List<Article> articles = articleService.getArticles();
+
+            if (articles.size() == 0) {
+                System.out.println("게시글이 없습니다");
+                return;
+            }
+
+            System.out.println("  번호  /   제목   /   작성자");
+            for (Article article : articles) {
+                System.out.printf("  %d     /     %s     /     %s\n", article.getId(), article.getTitle(), article.getWriter());
+            }
+            return;
+        }
+        int start = Integer.parseInt(cmd.split("list ")[1]);
+        int limit = 10;
+        System.out.printf("== %d 페이지 목록==\n", start);
+        List<Article> articles = articleService.getPageArticles(start, limit);
         if (articles.size() == 0) {
             System.out.println("게시글이 없습니다");
             return;

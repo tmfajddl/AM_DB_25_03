@@ -34,7 +34,6 @@ public class ArticleDao {
         sql.append("SELECT *");
         sql.append("FROM article");
         sql.append("ORDER BY id DESC");
-        sql.append("LIMIT 10");
 
         List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 
@@ -116,6 +115,25 @@ public class ArticleDao {
         sql.append("SELECT *");
         sql.append("FROM article");
         sql.append("WHERE writer LIKE ?;","%" + word + "%");
+
+        List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
+
+        List<Article> articles = new ArrayList<>();
+
+        for (Map<String, Object> articleMap : articleListMap) {
+            articles.add(new Article(articleMap));
+        }
+        return articles;
+    }
+
+    public List<Article> getPageArticles(int start, int limit) {
+
+        start = (start - 1) * limit;
+        SecSql sql = new SecSql();
+        sql.append("SELECT *");
+        sql.append("FROM article");
+        sql.append("ORDER BY id DESC");
+        sql.append("LIMIT ?,?",start,limit);
 
         List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 

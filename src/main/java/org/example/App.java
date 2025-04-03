@@ -115,8 +115,8 @@ public class App {
                 return 0;
             }
             articleController.doWrite(userId);
-        } else if (cmd.equals("article list")) {
-            articleController.showList();
+        } else if (cmd.startsWith("article list")) {
+            articleController.showList(cmd);
         } else if (cmd.startsWith("article modify")) {
             if(!active){
                 System.out.println("로그인 후 이용바랍니다.");
