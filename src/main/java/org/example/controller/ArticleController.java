@@ -22,14 +22,14 @@ public class ArticleController {
     }
 
 
-    public void doWrite() {
+    public void doWrite(String userId) {
         System.out.println("==글쓰기==");
         System.out.print("제목 : ");
         String title = sc.nextLine();
         System.out.print("내용 : ");
         String body = sc.nextLine();
 
-        int id = articleService.doWrite(title, body);
+        int id = articleService.doWrite(title, body, userId);
 
         System.out.println(id + "번 글이 생성됨");
     }

@@ -16,14 +16,15 @@ public class ArticleDao {
         this.conn = conn;
     }
 
-    public int doWrite(String title, String body) {
+    public int doWrite(String title, String body,String writer) {
         SecSql sql = new SecSql();
 
         sql.append("INSERT INTO article");
         sql.append("SET regDate = NOW(),");
         sql.append("updateDate = NOW(),");
         sql.append("title = ?,", title);
-        sql.append("`body`= ?;", body);
+        sql.append("`body`= ?,", body);
+        sql.append("writer = ?;", writer);
 
         return DBUtil.insert(conn, sql);
     }

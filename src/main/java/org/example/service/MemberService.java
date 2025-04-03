@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dao.MemberDao;
 
 import java.sql.Connection;
+import java.util.Map;
 
 public class MemberService {
 
@@ -18,5 +19,9 @@ public class MemberService {
 
     public int doJoin(Connection conn, String loginId, String loginPw, String name) {
         return memberDao.doJoin(conn,loginId, loginPw, name);
+    }
+
+    public Map<String, Object> dologin(Connection conn, String loginId, String loginPw){
+        return memberDao.dologin(conn, loginId, loginPw);
     }
 }

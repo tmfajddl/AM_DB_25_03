@@ -69,7 +69,9 @@ public class App {
                 return 0;
             }
             userId = memberController.doLogin();
-            active = true;
+            if(userId != null){
+                active = true;
+            }
         } else if (cmd.equals("member logout")){
             if(!active) {
                 System.out.println("로그인 되어 있지않습니다.");
@@ -89,7 +91,7 @@ public class App {
                 System.out.println("로그인 후 이용바랍니다.");
                 return 0;
             }
-            articleController.doWrite();
+            articleController.doWrite(userId);
         } else if (cmd.equals("article list")) {
             articleController.showList();
         } else if (cmd.startsWith("article modify")) {

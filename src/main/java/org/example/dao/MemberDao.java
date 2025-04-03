@@ -4,6 +4,7 @@ import org.example.util.DBUtil;
 import org.example.util.SecSql;
 
 import java.sql.Connection;
+import java.util.Map;
 
 public class MemberDao {
 
@@ -30,5 +31,15 @@ public class MemberDao {
         sql.append("`name` = ?;", name);
 
         return DBUtil.insert(conn, sql);
+    }
+
+    public Map<String, Object> dologin(Connection conn, String loginId, String loginPw) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT *");
+        sql.append("FROM `member`");
+        sql.append("WHERE loginId = ? AND", loginId);
+        sql.append("loginPw = ?;", loginPw);
+
+        return DBUtil.selectRow(conn, sql);
     }
 }

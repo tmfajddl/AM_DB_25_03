@@ -1,8 +1,6 @@
 package org.example.controller;
 
 import org.example.service.MemberService;
-import org.example.util.DBUtil;
-import org.example.util.SecSql;
 
 import java.sql.Connection;
 import java.util.Map;
@@ -95,34 +93,35 @@ public class MemberController {
     public String doLogin(){
         String loginId = null;
         String loginPw = null;
-        while (true) {
+        int i = 1;
+        while (i<4) {
             System.out.print("아이디 : ");
             loginId = sc.nextLine();
             System.out.print("비밀번호 : ");
             loginPw = sc.nextLine();
-            SecSql sql = new SecSql();
-            sql.append("SELECT *");
-            sql.append("FROM `member`");
-            sql.append("WHERE loginId = ? AND", loginId);
-            sql.append("loginPw = ?;", loginPw);
 
-            Map<String, Object> memberMap = DBUtil.selectRow(conn, sql);
+            Map<String, Object> memberMap = memberService.dologin(conn, loginId, loginPw);
 
             if(!memberMap.isEmpty()){
                 System.out.println(loginId +"님 로그인 되었습니다.");
-                break;
+                return loginId;
             }
 
             else if (memberMap.isEmpty()) {
                 boolean isLoginIdDup = memberService.isLoginIdDup(conn, loginId);
                 if (!isLoginIdDup) {
                     System.out.println("존재하지 않는 아이디입니다.");
+                    System.out.println(i + "번 잘못 입력하셨습니다.");
+                    i++;
                     continue;
                 }
                 System.out.println("비밀번호가 틀립니다.");
+                System.out.println(i + "번 잘못 입력하셨습니다.");
+                i++;
             }
 
         }
-        return loginId;
+        System.out.println("다시 로그인 바랍니다.");
+        return null;
     }
 }
