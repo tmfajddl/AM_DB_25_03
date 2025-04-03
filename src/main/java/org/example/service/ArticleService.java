@@ -36,4 +36,15 @@ public class ArticleService {
         articleDao.doDelete(id);
     }
 
+    public List<Article> doSearchTitle(String word) {
+        return articleDao.doSearchTitle(word);
+    }
+
+    public List<Article> doSearchBody(String word) {
+        return articleDao.doSearchBoby(word);
+    }
+
+    public List<Article> doSearchWriter(String word) {
+        return articleDao.doSearchWriter(word);
+    }
 }

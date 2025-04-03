@@ -36,7 +36,6 @@ public class ArticleController {
 
     public void showList() {
         System.out.println("==목록==");
-
         List<Article> articles = articleService.getArticles();
 
         if (articles.size() == 0) {
@@ -113,7 +112,7 @@ public class ArticleController {
         System.out.println("수정날짜 : " + article.getUpdateDate());
         System.out.println("제목 : " + article.getTitle());
         System.out.println("내용 : " + article.getBody());
-        System.out.println("글쓴이 : " + article.getWriter());
+        System.out.println("작성자 : " + article.getWriter());
     }
 
     public void doDelete(String cmd,  String userId) {
@@ -145,5 +144,37 @@ public class ArticleController {
         articleService.doDelete(id);
 
         System.out.println(id + "번 글이 삭제되었습니다.");
+    }
+
+    public void doSearch(String cmd) {
+        String word = cmd.trim().split("search ")[1];
+        List<Article> articles = null;
+        while(true){
+            System.out.print("검색할 내용을 고르세요: ");
+            String type = sc.nextLine().trim();
+            if(type.equals("title")) {
+                articles = articleService.doSearchTitle(word);
+                break;
+            }
+            else if(type.equals("body")) {
+                articles = articleService.doSearchBody(word);
+                break;
+            }
+            else if(type.equals("writer")) {
+                articles = articleService.doSearchWriter(word);
+                break;
+            }
+            System.out.println("다시 입력해주세요");
+        }
+
+        if (articles.size() == 0) {
+            System.out.println("게시글이 없습니다");
+            return;
+        }
+
+        System.out.println("  번호  /   제목   /   작성자");
+        for (Article article : articles) {
+            System.out.printf("  %d     /     %s     /     %s\n", article.getId(), article.getTitle(), article.getWriter());
+        }
     }
 }

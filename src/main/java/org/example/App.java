@@ -131,7 +131,10 @@ public class App {
                 return 0;
             }
             articleController.doDelete(cmd,userId);
-        } else {
+        } else if(cmd.startsWith("article search")) {
+            articleController.doSearch(cmd);
+        }
+        else {
             System.out.println("사용할 수 없는 명령어입니다");
         }
 

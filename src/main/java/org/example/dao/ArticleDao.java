@@ -34,6 +34,7 @@ public class ArticleDao {
         sql.append("SELECT *");
         sql.append("FROM article");
         sql.append("ORDER BY id DESC");
+        sql.append("LIMIT 10");
 
         List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
 
@@ -76,5 +77,53 @@ public class ArticleDao {
         sql.append("WHERE id = ?", id);
 
         DBUtil.delete(conn, sql);
+    }
+
+    public List<Article> doSearchTitle(String word) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT *");
+        sql.append("FROM article");
+        sql.append("WHERE title LIKE ?;","%" + word + "%");
+
+        List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
+
+        List<Article> articles = new ArrayList<>();
+
+        for (Map<String, Object> articleMap : articleListMap) {
+            articles.add(new Article(articleMap));
+        }
+        return articles;
+    }
+
+    public List<Article> doSearchBoby(String word) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT *");
+        sql.append("FROM article");
+        sql.append("WHERE `body` LIKE ?;","%" + word + "%");
+
+        List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
+
+        List<Article> articles = new ArrayList<>();
+
+        for (Map<String, Object> articleMap : articleListMap) {
+            articles.add(new Article(articleMap));
+        }
+        return articles;
+    }
+
+    public List<Article> doSearchWriter(String word) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT *");
+        sql.append("FROM article");
+        sql.append("WHERE writer LIKE ?;","%" + word + "%");
+
+        List<Map<String, Object>> articleListMap = DBUtil.selectRows(conn, sql);
+
+        List<Article> articles = new ArrayList<>();
+
+        for (Map<String, Object> articleMap : articleListMap) {
+            articles.add(new Article(articleMap));
+        }
+        return articles;
     }
 }
