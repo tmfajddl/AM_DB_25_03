@@ -1,4 +1,4 @@
-package org.example;
+package org.example.dto;
 
 import java.util.Map;
 
@@ -9,6 +9,7 @@ public class Member {
     private String liginId;
     private String liginPw;
     private String Name;
+
     public Member(int id, String regDate, String updateDate, String liginId, String liginPw, String Name) {
         this.id = id;
         this.regDate = regDate;

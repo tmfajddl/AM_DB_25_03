@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.Article;
+import org.example.dto.Article;
 import org.example.util.DBUtil;
 import org.example.util.SecSql;
 

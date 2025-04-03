@@ -86,6 +86,29 @@ public class App {
                 return 0;
             }
             memberController.doJoin();
+        } else if (cmd.equals("member information")) {
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
+            memberController.showInfo(userId);
+        } else if(cmd.equals("member update")){
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
+            memberController.doUpdate(userId);
+        } else if(cmd.equals("member delete")){
+            if(!active){
+                System.out.println("로그인 후 이용바랍니다.");
+                return 0;
+            }
+            userId = memberController.doDelete(userId);
+            if(userId == null){
+                active = false;
+            }
+        } else if(cmd.equals("member list")){
+            memberController.showList();
         } else if (cmd.equals("article write")) {
             if(!active){
                 System.out.println("로그인 후 이용바랍니다.");

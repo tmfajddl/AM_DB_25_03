@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.Article;
+import org.example.dto.Article;
 import org.example.service.ArticleService;
 
 import java.sql.Connection;
